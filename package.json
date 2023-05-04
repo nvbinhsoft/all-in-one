@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "@swc/helpers": "~0.5.0",
+    "arktype": "^1.0.14-alpha",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -14,6 +15,7 @@
     "@nx/eslint-plugin": "16.0.3",
     "@nx/js": "16.0.3",
     "@nx/linter": "16.0.3",
+    "@nx/nest": "^16.0.3",
     "@nx/react": "16.0.3",
     "@nx/vite": "16.0.3",
     "@nx/workspace": "16.0.3",
