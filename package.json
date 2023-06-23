@@ -8,6 +8,7 @@
     "@nestjs/common": "9.4.3",
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "9.4.3",
+    "@nestjs/cqrs": "^10.0.1",
     "@nestjs/microservices": "^9.4.3",
     "@nestjs/platform-express": "9.4.3",
     "@swc/helpers": "~0.5.0",

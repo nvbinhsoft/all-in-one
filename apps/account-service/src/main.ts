@@ -8,28 +8,30 @@ import {NestFactory} from '@nestjs/core';
 
 import {AppModule} from './app/app.module';
 import {MicroserviceOptions, Transport} from "@nestjs/microservices";
+import {accountConfig, AccountConfig} from "@all-in-one/account/utils/config";
 
 async function bootstrap() {
 
-  const user = 'user'
-  const pwd = 'bitnami'
-  const host = 'localhost';
-  const port = 5672;
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'debug', 'log', 'verbose']
+  });
 
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+  const accountConfigService = app.get<AccountConfig>(accountConfig.KEY);
+
+  app.connectMicroservice<MicroserviceOptions>( {
     transport: Transport.RMQ,
     options: {
-      urls: [`amqp://${user}:${pwd}@${host}:${port}`],
+      urls: [accountConfigService.rabbitmq.url],
       queue: 'account_queue',
       queueOptions: {
         durable: false
       },
     }
   });
-  await app.listen();
-  Logger.log(
-    `🚀 Application is running`
-  );
+
+  await app.startAllMicroservices();
+  Logger.log('Account service is running');
+
 }
 
 bootstrap();
