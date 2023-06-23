@@ -7,6 +7,7 @@ export function App() {
   return (
     <div>
       <NxWelcome title="all-in-one-fe" />
+      <div>Hello world</div>
     </div>
   );
 }

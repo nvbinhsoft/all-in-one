@@ -1,0 +1,64 @@
+{
+  "name": "youtube-clone",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/youtube-clone/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/youtube-clone",
+        "main": "apps/youtube-clone/src/main.ts",
+        "tsConfig": "apps/youtube-clone/tsconfig.app.json",
+        "assets": ["apps/youtube-clone/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/youtube-clone/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "youtube-clone:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "youtube-clone:build:development"
+        },
+        "production": {
+          "buildTarget": "youtube-clone:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/youtube-clone/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/youtube-clone/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

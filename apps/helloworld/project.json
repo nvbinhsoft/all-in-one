@@ -1,0 +1,68 @@
+{
+  "name": "helloworld",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/helloworld/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/helloworld",
+        "main": "apps/helloworld/src/main.ts",
+        "tsConfig": "apps/helloworld/tsconfig.app.json",
+        "assets": ["apps/helloworld/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/helloworld/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "helloworld:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "helloworld:build:development"
+        },
+        "production": {
+          "buildTarget": "helloworld:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/helloworld/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/helloworld/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/helloworld/Dockerfile . -t helloworld"
+    }
+  },
+  "tags": []
+}
