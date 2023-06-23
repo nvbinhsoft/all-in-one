@@ -16,6 +16,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@all-in-one/account/utils-config": [
+        "libs/account/utils-config/src/index.ts"
+      ],
       "@all-in-one/api/utils": ["libs/api/utils/src/index.ts"]
     }
   },
