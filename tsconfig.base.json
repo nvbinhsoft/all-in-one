@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@all-in-one/account/commands": ["libs/account/commands/src/index.ts"],
+      "@all-in-one/account/database": ["libs/account/database/src/index.ts"],
       "@all-in-one/account/utils/config": [
         "libs/account/utils/config/src/index.ts"
       ],
