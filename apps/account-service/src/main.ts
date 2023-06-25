@@ -43,7 +43,7 @@ async function bootstrap() {
   Logger.log('Account service is running');
 
   await app.listen(3300, () => {
-    Logger.log('Account service is listening on port 3300');
+    Logger.log('Account service is listening on port 3300, try http://localhost:3300/api');
   });
 }
 
