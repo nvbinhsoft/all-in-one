@@ -11,7 +11,7 @@ const accountConfigType = z.object({
 
 accountConfigType.parse(process.env);
 
-export const accountConfig = registerAs('accountConfig', () => ({
+export const rabbitmqConfig = registerAs('rabbitmqConfig', () => ({
   rabbitmq: {
     user: process.env.RABBITMQ_USER || 'user',
     pwd: process.env.RABBITMQ_PWD || 'bitnami',
@@ -23,9 +23,9 @@ export const accountConfig = registerAs('accountConfig', () => ({
   }
 }));
 
-export type AccountConfig = ConfigType<typeof accountConfig>;
+export type RabbitmqConfig = ConfigType<typeof rabbitmqConfig>;
 
-export const InjectAccountConfig = () => Inject(accountConfig.KEY);
+export const InjectRabbitmqConfig = () => Inject(rabbitmqConfig.KEY);
 
 
 declare global {

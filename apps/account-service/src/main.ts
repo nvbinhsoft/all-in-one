@@ -8,7 +8,7 @@ import {NestFactory} from '@nestjs/core';
 
 import {AppModule} from './app/app.module';
 import {MicroserviceOptions, Transport} from "@nestjs/microservices";
-import {accountConfig, AccountConfig} from "@all-in-one/account/utils/config";
+import {RabbitmqConfig, rabbitmqConfig} from "@all-in-one/account/utils/config";
 
 async function bootstrap() {
 
@@ -16,7 +16,7 @@ async function bootstrap() {
     logger: ['error', 'warn', 'debug', 'log', 'verbose']
   });
 
-  const accountConfigService = app.get<AccountConfig>(accountConfig.KEY);
+  const accountConfigService = app.get<RabbitmqConfig>(rabbitmqConfig.KEY);
 
   app.connectMicroservice<MicroserviceOptions>( {
     transport: Transport.RMQ,
