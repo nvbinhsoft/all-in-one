@@ -21,7 +21,8 @@
       "@all-in-one/account/utils/config": [
         "libs/account/utils/config/src/index.ts"
       ],
-      "@all-in-one/api/utils": ["libs/api/utils/src/index.ts"],
+      "@all-in-one/core/api": ["libs/core/api/src/index.ts"],
+      "@all-in-one/core/application": ["libs/core/application/src/index.ts"],
       "@all-in-one/core/ddd": ["libs/core/ddd/src/index.ts"],
       "@all-in-one/core/exceptions": ["libs/core/exceptions/src/index.ts"],
       "@all-in-one/core/guard": ["libs/core/guard/src/index.ts"],

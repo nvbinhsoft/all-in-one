@@ -1,4 +1,5 @@
 import {v4} from 'uuid';
+import {EmptyGuard} from "@all-in-one/core/guard";
 
 export type CommandProps<T> = Omit<T, 'id' | 'metadata'> & Partial<Command>;
 
@@ -18,7 +19,7 @@ export class Command {
   readonly metadata: CommandMetadata;
 
   constructor(props: CommandProps<unknown>) {
-    if (Guard.isEmpty(props)) {
+    if (EmptyGuard(props)) {
       throw new ArgumentNotProvidedException(
         'Command props should not be empty',
       );
