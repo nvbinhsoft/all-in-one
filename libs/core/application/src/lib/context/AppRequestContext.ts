@@ -1,9 +1,8 @@
 import {RequestContext} from "nestjs-request-context";
 
 export class AppRequestContext extends RequestContext {
-  // @ts-ignore
-  requestId: string;
-}RequestContext.currentContext
+  requestId: string | null = null;
+}
 
 export class RequestContextService {
   static getContext(): AppRequestContext {
