@@ -3,7 +3,7 @@ import {RequestContext} from "nestjs-request-context";
 export class AppRequestContext extends RequestContext {
   // @ts-ignore
   requestId: string;
-}
+}RequestContext.currentContext
 
 export class RequestContextService {
   static getContext(): AppRequestContext {

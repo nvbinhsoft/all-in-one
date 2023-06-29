@@ -1,5 +1,7 @@
 import {v4} from 'uuid';
 import {EmptyGuard} from "@all-in-one/core/guard";
+import {ArgumentNotProvidedException} from "@all-in-one/core/exceptions";
+import {RequestContextService} from "@all-in-one/core/application";
 
 export type CommandProps<T> = Omit<T, 'id' | 'metadata'> & Partial<Command>;
 

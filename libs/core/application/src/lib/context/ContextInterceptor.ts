@@ -1,6 +1,5 @@
 import {CallHandler, ExecutionContext, Injectable, NestInterceptor} from "@nestjs/common";
 import {Observable} from "rxjs";
-import {nanoid} from "nanoid";
 import {RequestContextService} from "./AppRequestContext";
 
 @Injectable()
@@ -13,7 +12,7 @@ export class ContextInterceptor implements NestInterceptor {
      * generate an ID in global context of each request.
      * This can be used as correlation id
      */
-    const requestId = request?.body?.requestId ?? nanoid(6);
+    const requestId = request?.body?.requestId; // ?? nanoid(6)
 
 
     RequestContextService.setRequestId(requestId);

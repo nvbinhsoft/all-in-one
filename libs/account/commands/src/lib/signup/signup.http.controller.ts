@@ -3,7 +3,9 @@ import {CommandBus} from "@nestjs/cqrs";
 import {SignupRequestDto} from "./signup.request.dto";
 import {ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {ApiErrorResponse, IdResponse} from "@all-in-one/core/api";
-
+import {Result} from 'oxide.ts';
+import {SignupCommand} from "./signup.command";
+import {AggregateId} from "@all-in-one/core/ddd";
 
 @Controller('v1')
 export class SignupHttpController {
@@ -26,8 +28,13 @@ export class SignupHttpController {
     type: ApiErrorResponse,
   })
   @Post('/account/signup')
-  async signup(@Body() body: SignupRequestDto) {
+  async signup(@Body() body: SignupRequestDto): Promise<IdResponse> {
+    const command = new SignupCommand(body);
 
+    const result: Result<AggregateId, >
+
+
+    return null;
   }
 
 
