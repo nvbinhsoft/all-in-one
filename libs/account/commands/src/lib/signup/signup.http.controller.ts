@@ -30,11 +30,10 @@ export class SignupHttpController {
   @Post('/account/signup')
   async signup(@Body() body: SignupRequestDto): Promise<IdResponse> {
     const command = new SignupCommand(body);
+    const result: Result<AggregateId, Error> = await this.commandBus.execute(command);
 
-    const result: Result<AggregateId, >
 
-
-    return null;
+    return new IdResponse('1');
   }
 
 

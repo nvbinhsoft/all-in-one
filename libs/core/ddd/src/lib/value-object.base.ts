@@ -1,5 +1,6 @@
 import {EmptyGuard} from "@all-in-one/core/guard";
 import {ArgumentNotProvidedException} from "@all-in-one/core/exceptions";
+import {convertPropsToObject} from "@all-in-one/utils";
 
 export type Primitives = string | number | boolean;
 
@@ -13,7 +14,7 @@ export abstract class ValueObject<T> {
 
   protected readonly props: ValueObjectProps<T>;
 
-  protected constructor(props: ValueObjectProps<T>) {
+  constructor(props: ValueObjectProps<T>) {
     this.checkIfEmpty(props);
     this.validate(props);
     this.props = props;
@@ -38,5 +39,15 @@ export abstract class ValueObject<T> {
     }
 
     return false;
+  }
+
+  public unpack(): T {
+    if (this.isDomainPrimitive(this.props)) {
+      return this.props.value;
+    }
+
+    const propsCopy = convertPropsToObject(this.props);
+
+    return Object.freeze(propsCopy);
   }
 }

@@ -6,7 +6,7 @@ import { LengthGuard } from '../lib/length.guard';
 
 describe('LengthGuard.inRange', () => {
   it('should return true if the length of a number is between min and max', () => {
-    expect(LengthGuard.inRange(1, 1, 2)).toBe(true);
+    expect(LengthGuard.inRange(1, 1, 2)).toBe(true    );
   });
 
   it('should return true if the length of a string is between min and max', () => {

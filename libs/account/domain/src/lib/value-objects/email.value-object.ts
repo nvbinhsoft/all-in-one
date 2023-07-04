@@ -2,7 +2,7 @@ import {ValueObject} from "@all-in-one/core/ddd";
 import {ArgumentInvalidException} from "@all-in-one/core/exceptions";
 
 export interface EmailProps {
-  email: string;
+  value: string;
 }
 
 export class Email extends ValueObject<EmailProps> {
@@ -19,7 +19,7 @@ export class Email extends ValueObject<EmailProps> {
     // \S+ matches any non-whitespace character (equal to [^\r\n\t\f\v ])
     // $ asserts position at the end of a line
     const isEmailRegex = /\S+@\S+\.\S+/;
-    if (!isEmailRegex.test(props.email)) {
+    if (!isEmailRegex.test(props.value)) {
       throw new ArgumentInvalidException('Email is not in valid format', new Error('Email is not in valid format'), {
         field: 'email'
       })
