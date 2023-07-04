@@ -1,6 +1,7 @@
 import {ValueObject} from "@all-in-one/core/ddd";
 import {LengthGuard} from "@all-in-one/core/guard";
 import {ArgumentInvalidException} from "@all-in-one/core/exceptions";
+import * as bcrypt from 'bcrypt';
 
 export interface PasswordProps {
   value: string
@@ -30,6 +31,12 @@ export class Password extends ValueObject<PasswordProps> {
     if(!props.value.match(/[!@#$%^&*(),.?":{}|<>]/g)) {
       throw new ArgumentInvalidException('Password is not strong enough')
     }
+  }
+
+
+  public hash(): string {
+    const SALT_ROUNDS = 10;
+    return bcrypt.hashSync(this.props.value, SALT_ROUNDS);
   }
 
 }
