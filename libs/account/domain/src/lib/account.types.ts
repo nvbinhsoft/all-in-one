@@ -12,9 +12,11 @@ export interface AccountProps {
 }
 
 
+
 // properties that needed for user signup process
 export interface SignupProps {
   email: Email;
 
   password: Password;
+
 }

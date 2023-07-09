@@ -1,20 +1,19 @@
-import {ValueObject} from "@all-in-one/core/ddd";
+import {DomainPrimitive, ValueObject} from "@all-in-one/core/ddd";
 import {LengthGuard} from "@all-in-one/core/guard";
 import {ArgumentInvalidException} from "@all-in-one/core/exceptions";
 import * as bcrypt from 'bcrypt';
+import {Sensitive} from "@all-in-one/core/decorator";
 
-export interface PasswordProps {
-  value: string
-}
 
 /**
  * A domain model should be as close as possible to the real world.
  * In the real world, a password is not a string, it is a concept.
  * A password can be strong or weak, it can be hashed or not, it can be encrypted or not.
  */
-export class Password extends ValueObject<PasswordProps> {
+@Sensitive
+export class Password extends ValueObject<string> {
 
-  protected override validate(props: PasswordProps): void {
+  protected override validate(props: DomainPrimitive<string>): void {
     // add logic to validate a strong password
 
     // password must be at least 8 characters long

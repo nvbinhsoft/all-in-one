@@ -1,14 +1,14 @@
 import {EmptyGuard} from "@all-in-one/core/guard";
 import {ArgumentNotProvidedException} from "@all-in-one/core/exceptions";
-import {convertPropsToObject} from "@all-in-one/utils";
 
 export type Primitives = string | number | boolean;
 
-export interface DomainPrimitive<T extends Primitives | Date> {
+export interface DomainPrimitive<T extends Primitives> {
   value: T;
 }
 
-type ValueObjectProps<T> = T extends Primitives | Date ? DomainPrimitive<T> : T;
+type ValueObjectProps<T> = T extends Primitives ? DomainPrimitive<T> : T;
+
 
 export abstract class ValueObject<T> {
 
@@ -32,7 +32,7 @@ export abstract class ValueObject<T> {
     }
   }
 
-  private isDomainPrimitive(obj: unknown): obj is DomainPrimitive<T & (Primitives | Date)> {
+  private isDomainPrimitive(obj: unknown): obj is DomainPrimitive<T & (Primitives )> {
 
     if(Object.prototype.hasOwnProperty.call(obj, 'value')) {
       return true;
@@ -43,11 +43,27 @@ export abstract class ValueObject<T> {
 
   public unpack(): T {
     if (this.isDomainPrimitive(this.props)) {
+      // return this.props.value;
       return this.props.value;
     }
 
-    const propsCopy = convertPropsToObject(this.props);
+    // const propsCopy = convertPropsToObject(this.props);
 
-    return Object.freeze(propsCopy);
+    // const propsCopy = {...this.props};
+    //
+    // for (const props in propsCopy) {
+    //   if(Array.isArray(propsCopy[props])) {
+    //     propsCopy[props] = (propsCopy[props] as Array<unknown>).map(item => {
+    //       return convertToPlainObject(item)
+    //     });
+    //   }
+    //
+    //   propsCopy[props] = convertToPlainObject(propsCopy[props]);
+    // }
+
+    return Object.freeze({} as T);
+    // return Object.freeze(propsCopy);
   }
+
+
 }

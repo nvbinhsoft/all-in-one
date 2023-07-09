@@ -1,11 +1,13 @@
 import {RequestContext} from "nestjs-request-context";
-import {nanoid} from "nanoid";
+import {v4} from "uuid";
+
+
 
 export class AppRequestContext extends RequestContext {
 
   // this id can be automatically generated
   // or can be passed from the client
-  requestId: string = nanoid(6);
+  requestId: string = v4();
 }
 
 export class RequestContextService {

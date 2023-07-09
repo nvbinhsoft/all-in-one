@@ -1,4 +1,7 @@
-import {convertPropsToObject} from "@all-in-one/utils";
+
+import {Primitives, ValueObject} from "./value-object.base";
+
+import {Expand} from "./types";
 
 export type AggregateId = string;
 
@@ -15,6 +18,14 @@ export interface CreateEntityProps<T> {
 
   updatedAt?: Date;
 }
+
+export type EntityObject<T> = T extends Entity<infer U> ? Omit<CreateEntityProps<U>, 'props'> & U : never;
+
+type UnpackEntity<T> = T extends Primitives | Date ? T : {
+  [K in keyof T]: T[K] extends ValueObject<infer U> ? UnpackEntity<U> : T[K] extends Entity<infer U> ? {id: string} & UnpackEntity<U> : T[K];
+} & Omit<CreateEntityProps<T>, 'props'>
+
+
 
 export abstract class Entity<EntityProps = unknown> {
   constructor({
@@ -115,17 +126,53 @@ export abstract class Entity<EntityProps = unknown> {
    * Can be useful for serialization purposes (e.g. sending data over network).
    * Or logging, testing, debugging.
    */
-  public toObject(): unknown {
+  // public toObject(): object {
+  //
+  //   const plainProps = convertPropsToObject(this.props);
+  //   const result = {
+  //     id: this._id,
+  //     createdAt: this._createdAt,
+  //     updatedAt: this._updatedAt,
+  //     ...plainProps,
+  //
+  //   }
+  //   return Object.freeze(result);
+  // }
 
-    const plainProps = convertPropsToObject(this.props);
+  public unpack(): Expand<UnpackEntity<EntityProps>> {
+    const propsCopy = {...this.props} as EntityProps;
+    for (const propKey in propsCopy) {
+      const prop = propsCopy[propKey];
+
+      if(Array.isArray(prop)) {
+        propsCopy[propKey] = prop.map((item ) => {
+          return this.unpackProp(item);
+       }) as unknown as EntityProps[Extract<keyof EntityProps, string>];
+      }else {
+        propsCopy[propKey] = this.unpackProp(prop) as EntityProps[Extract<keyof EntityProps, string>];
+      }
+
+    }
+
     const result = {
       id: this._id,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
-      ...plainProps,
-
+      ...propsCopy,
     }
-    return Object.freeze(result);
+
+    return Object.freeze(result) as unknown as Expand<UnpackEntity<EntityProps>>;
   }
+
+
+  // write unpack prop and prop should be entity or value object
+  private unpackProp(prop: unknown): unknown {
+    if (prop instanceof Entity || prop instanceof ValueObject) {
+      return prop.unpack();
+    }
+    return prop;
+  }
+
+
 
 }

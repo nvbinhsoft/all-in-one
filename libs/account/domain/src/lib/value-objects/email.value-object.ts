@@ -1,13 +1,10 @@
-import {ValueObject} from "@all-in-one/core/ddd";
+import {DomainPrimitive, ValueObject} from "@all-in-one/core/ddd";
 import {ArgumentInvalidException} from "@all-in-one/core/exceptions";
 
-export interface EmailProps {
-  value: string;
-}
 
-export class Email extends ValueObject<EmailProps> {
+export class Email extends ValueObject<string> {
 
-  protected override validate(props: EmailProps): void {
+  protected override validate(props: DomainPrimitive<string>): void {
     // add logic to validate is email in valid format
 
 

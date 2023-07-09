@@ -3,27 +3,30 @@ import {AccountProps, SignupProps} from "./account.types";
 import {v4} from "uuid";
 import {AccountCreatedDomainEvent} from "./events/account-created.domain-event";
 
+import * as bcrypt from 'bcrypt';
 export class AccountEntity extends AggregateRoot<AccountProps> {
 
-  static create(userProps: SignupProps): AccountEntity {
+  static async create(userProps: SignupProps): Promise<AccountEntity> {
     const id = v4();
+
     const props: AccountProps = {
       ...userProps,
-      hash: ""
+      // hash the password
+      hash: userProps.password.hash()
     }
 
     const account = new AccountEntity({id, props});
 
+    /**
+     * Add domain event and we will publish it later
+     */
     account.addEvent(new AccountCreatedDomainEvent({
       aggregateId: id,
-      email: props.email.unpack().value
+      email: props.email.unpack()
     }))
 
     return account;
   }
-
-
-
 
 
 }
