@@ -11,7 +11,7 @@ export class AccountEntity extends AggregateRoot<AccountProps> {
     const id = v4();
 
     const props: AccountProps = {
-      ...userProps,
+      email: userProps.email,
       // hash the password
       hash: userProps.password.hash(),
     };

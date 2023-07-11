@@ -13,11 +13,11 @@ const authConfigType = z.object({
 authConfigType.parse(process.env);
 
 export const authConfig = registerAs("authConfig", () => ({
-  rt_jwt_secret: process.env.RT_JWT_SECRET || "rt_secret",
-  rt_jwt_expires_in: process.env.RT_JWT_EXPIRES_IN || 60 * 60 * 24 * 7, // A week
-  at_jwt_secret: process.env.AT_JWT_SECRET || "at_secret",
-  at_jwt_expires_in: process.env.AT_JWT_EXPIRES_IN || 60 * 15, // 15 min
-  jwt_salt: process.env.JWT_SALT || 12,
+  rt_jwt_secret: process.env.RT_JWT_SECRET,
+  rt_jwt_expires_in: process.env.RT_JWT_EXPIRES_IN, // A week
+  at_jwt_secret: process.env.AT_JWT_SECRET,
+  at_jwt_expires_in: process.env.AT_JWT_EXPIRES_IN, // 15 min
+  jwt_salt: process.env.JWT_SALT,
 }));
 
 export type AuthConfig = ConfigType<typeof authConfig>;

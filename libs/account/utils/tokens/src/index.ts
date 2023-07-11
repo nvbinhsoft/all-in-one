@@ -1,1 +1,1 @@
-export * from './lib/repository.di-token';
+export * from "./lib/account.di-token";

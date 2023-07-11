@@ -1,16 +1,9 @@
-import { Account } from "@prisma/client";
-import { PrismaEntity } from "@all-in-one/core/utils/types";
-import { Email } from "./value-objects/email.value-object";
-import { Password } from "./value-objects/password.value-object";
-import { SaltRound } from "./value-objects/salt-round.value-object";
-import { ExpiresIn } from "@all-in-one/account/domain";
+import { Email, Password, SaltRound, ExpiresIn } from "./value-objects";
 import { HashPort } from "./ports";
 import { JwtSecret } from "./value-objects";
 
 export interface AccountProps {
   email: Email;
-
-  password: Password;
 
   hash: string;
 }

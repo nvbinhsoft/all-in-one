@@ -1,7 +1,7 @@
 import { AccountRepositoryPort } from "./account.repository.port";
 import { AccountEntity } from "@all-in-one/account/domain";
 import { Paginated, PaginatedQueryParams } from "@all-in-one/core/ddd";
-import { Option } from "oxide.ts";
+import { None, Option } from "oxide.ts";
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 
@@ -32,7 +32,7 @@ export class AccountRepository implements AccountRepositoryPort {
     return Promise.resolve(null);
   }
 
-  findOneById(id: string): Promise<Option<AccountEntity>> {
+  async findOneById(id: string): Promise<Option<AccountEntity>> {
     this.prismaService.account
       .findUniqueOrThrow({
         where: {
@@ -40,6 +40,8 @@ export class AccountRepository implements AccountRepositoryPort {
         },
       })
       .then();
+
+    return None;
 
     // return Promise.resolve(undefined);
   }
