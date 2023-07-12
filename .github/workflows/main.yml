@@ -14,6 +14,7 @@ jobs:
           fetch-depth: 0
       - uses: nrwl/nx-set-shas@v3
       - run: npm ci
+      - run: npx prisma generate --schema ./prisma/account-schema.prisma
 
       - run: npx nx format:write
       - run: npx nx format:check
