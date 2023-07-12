@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import {SignupHttpController} from "../../lib/signup/signup.http.controller";
+import { Test, TestingModule } from "@nestjs/testing";
+import { SignupHttpController } from "../../lib/signup/signup.http.controller";
 
-describe('signupHttpController', () => {
+describe("signupHttpController", () => {
   let app: TestingModule;
 
   beforeAll(async () => {
@@ -11,9 +11,7 @@ describe('signupHttpController', () => {
     }).compile();
   });
 
-  // describe('getData', () => {
-  //   it('should return "Hello API"', () => {
-  //     const signupHttpController = app.get<SignupHttpController>(SignupHttpController);
-  //   });
-  // });
+  afterAll(async () => {
+    // todo: clear database after test
+  });
 });

@@ -1,7 +1,6 @@
+import { Primitives, ValueObject } from "./value-object.base";
 
-import {Primitives, ValueObject} from "./value-object.base";
-
-import {Expand} from "./types";
+import { Expand } from "./types";
 
 export type AggregateId = string;
 
@@ -19,22 +18,22 @@ export interface CreateEntityProps<T> {
   updatedAt?: Date;
 }
 
-export type EntityObject<T> = T extends Entity<infer U> ? Omit<CreateEntityProps<U>, 'props'> & U : never;
+export type EntityObject<T> = T extends Entity<infer U>
+  ? Omit<CreateEntityProps<U>, "props"> & U
+  : never;
 
-type UnpackEntity<T> = T extends Primitives | Date ? T : {
-  [K in keyof T]: T[K] extends ValueObject<infer U> ? UnpackEntity<U> : T[K] extends Entity<infer U> ? {id: string} & UnpackEntity<U> : T[K];
-} & Omit<CreateEntityProps<T>, 'props'>
-
-
+type UnpackEntity<T> = T extends Primitives | Date
+  ? T
+  : {
+      [K in keyof T]: T[K] extends ValueObject<infer U>
+        ? UnpackEntity<U>
+        : T[K] extends Entity<infer U>
+        ? { id: string } & UnpackEntity<U>
+        : T[K];
+    } & Omit<CreateEntityProps<T>, "props">;
 
 export abstract class Entity<EntityProps = unknown> {
-  constructor({
-    id,
-    createdAt,
-    updatedAt,
-    props,
-  }: CreateEntityProps<EntityProps>) {
-
+  constructor({ id, createdAt, updatedAt, props }: CreateEntityProps<EntityProps>) {
     this._id = id;
     // this.validateProps(props);
     const now = new Date();
@@ -109,12 +108,12 @@ export abstract class Entity<EntityProps = unknown> {
    * @memberof Entity
    */
   public getPropsCopy(): EntityProps {
-    const propsCopy = {
+    const propsCopy: EntityProps = {
       id: this._id,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
       ...this.props,
-    }
+    };
 
     return Object.freeze(propsCopy);
   }
@@ -140,18 +139,20 @@ export abstract class Entity<EntityProps = unknown> {
   // }
 
   public unpack(): Expand<UnpackEntity<EntityProps>> {
-    const propsCopy = {...this.props} as EntityProps;
+    const propsCopy = { ...this.props } as EntityProps;
     for (const propKey in propsCopy) {
       const prop = propsCopy[propKey];
 
-      if(Array.isArray(prop)) {
-        propsCopy[propKey] = prop.map((item ) => {
+      if (Array.isArray(prop)) {
+        propsCopy[propKey] = prop.map((item) => {
           return this.unpackProp(item);
-       }) as unknown as EntityProps[Extract<keyof EntityProps, string>];
-      }else {
-        propsCopy[propKey] = this.unpackProp(prop) as EntityProps[Extract<keyof EntityProps, string>];
+        }) as unknown as EntityProps[Extract<keyof EntityProps, string>];
+      } else {
+        propsCopy[propKey] = this.unpackProp(prop) as EntityProps[Extract<
+          keyof EntityProps,
+          string
+        >];
       }
-
     }
 
     const result = {
@@ -159,11 +160,10 @@ export abstract class Entity<EntityProps = unknown> {
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
       ...propsCopy,
-    }
+    };
 
     return Object.freeze(result) as unknown as Expand<UnpackEntity<EntityProps>>;
   }
-
 
   // write unpack prop and prop should be entity or value object
   private unpackProp(prop: unknown): unknown {
@@ -172,7 +172,4 @@ export abstract class Entity<EntityProps = unknown> {
     }
     return prop;
   }
-
-
-
 }
