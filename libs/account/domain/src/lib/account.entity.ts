@@ -1,5 +1,10 @@
 import { AggregateRoot } from "@all-in-one/core/ddd";
-import { AccountProps, GenerateTokenProps, SignupProps } from "./account.types";
+import {
+  AccountProps,
+  GenerateTokenProps,
+  SignInProps,
+  SignupProps,
+} from "./account.types";
 import { v4 } from "uuid";
 import { AccountCreatedDomainEvent } from "./events/account-created.domain-event";
 
@@ -31,12 +36,16 @@ export class AccountEntity extends AggregateRoot<AccountProps> {
     return account;
   }
 
+  async signIn(props: SignInProps): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+
   /**
    * The payload of the jwt token will be defined by entity
    * The developer can pass 2 different secret to generate 2 different jwt token
    * @param secret: jwt secret
    */
-  async generateToken(props: GenerateTokenProps): Promise<string> {
+  private async generateToken(props: GenerateTokenProps): Promise<string> {
     const account = this.unpack();
     return await props.hashService.signAsync(
       { sub: account.id, ...account },

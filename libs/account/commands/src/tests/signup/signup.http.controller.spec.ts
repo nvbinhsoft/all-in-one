@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { SignupHttpController } from "../../lib/signup/signup.http.controller";
+import { CqrsModule } from "@nestjs/cqrs";
 
 describe("signupHttpController", () => {
   let app: TestingModule;
@@ -8,7 +9,12 @@ describe("signupHttpController", () => {
     app = await Test.createTestingModule({
       controllers: [SignupHttpController],
       providers: [],
+      imports: [CqrsModule],
     }).compile();
+  });
+
+  it("should init", () => {
+    expect(app).toBeDefined();
   });
 
   afterAll(async () => {

@@ -19,7 +19,7 @@ import { JwtService } from "@nestjs/jwt";
 import { AuthConfig, InjectAuthConfig } from "@all-in-one/account/utils/config";
 
 @CommandHandler(SignupCommand)
-export class SignupService implements ICommandHandler {
+export class SignupService implements ICommandHandler<SignupCommand> {
   constructor(
     @Inject(ACCOUNT_REPOSITORY)
     private accountRepository: AccountRepositoryPort,

@@ -17,6 +17,11 @@ export interface SignupProps {
   saltRound: SaltRound;
 }
 
+export interface SignInProps {
+  email: Email;
+  password: Password;
+}
+
 export interface GenerateTokenProps {
   secret: JwtSecret;
   expiresIn: ExpiresIn;
