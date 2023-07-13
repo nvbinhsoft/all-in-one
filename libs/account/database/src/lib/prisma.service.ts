@@ -1,11 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import {
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-  OnModuleInit,
-} from "@nestjs/common";
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { DatabaseConfig, InjectDatabaseConfig } from "@all-in-one/account/utils/config";
 
 @Injectable()
@@ -21,8 +15,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async onModuleInit(): Promise<void> {
-    const prisma = new PrismaClient();
-
     Logger.log("Connecting to Prisma");
     await this.$connect();
     Logger.log("Prisma connected");

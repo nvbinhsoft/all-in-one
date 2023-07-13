@@ -8,9 +8,6 @@ import {
 import { v4 } from "uuid";
 import { AccountCreatedDomainEvent } from "./events/account-created.domain-event";
 
-import * as bcrypt from "bcrypt";
-import { ExpiresIn } from "./value-objects/expires-in.value-object";
-import { JwtService } from "@nestjs/jwt";
 export class AccountEntity extends AggregateRoot<AccountProps> {
   static async create(userProps: SignupProps): Promise<AccountEntity> {
     const id = v4();
