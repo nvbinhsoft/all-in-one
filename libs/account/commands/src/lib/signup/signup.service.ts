@@ -46,23 +46,6 @@ export class SignupService implements ICommandHandler<SignupCommand> {
     try {
       await this.prismaClient.$transaction(async () => {
         await this.accountRepository.insert(account);
-
-        // const generateRefreshTokenProps = {
-        //   secret: new JwtSecret({ value: this.authConfig.rt_jwt_secret }),
-        //   expiresIn: new ExpiresIn({ value: Number(this.authConfig.rt_jwt_expires_in) }),
-        //   hashService: this.jwtService,
-        // };
-        //
-        // const generateAccessTokenProps = {
-        //   secret: new JwtSecret({ value: this.authConfig.at_jwt_secret }),
-        //   expiresIn: new ExpiresIn({ value: Number(this.authConfig.at_jwt_expires_in) }),
-        //   hashService: this.jwtService,
-        // };
-        //
-        // const [refreshToken, accessToken] = await Promise.all([
-        //   account.generateToken(generateRefreshTokenProps),
-        //   account.generateToken(generateAccessTokenProps),
-        // ]);
       });
 
       return Ok(account.id);
