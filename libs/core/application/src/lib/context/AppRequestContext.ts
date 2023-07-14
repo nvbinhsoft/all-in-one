@@ -1,10 +1,11 @@
-import {RequestContext} from "nestjs-request-context";
-import {v4} from "uuid";
+import * as Request from "nestjs-request-context";
+import { v4 } from "uuid";
+import { Injectable, Scope } from "@nestjs/common";
 
-
-
-export class AppRequestContext extends RequestContext {
-
+@Injectable({
+  scope: Scope.REQUEST,
+})
+export class AppRequestContext extends Request.RequestContext {
   // this id can be automatically generated
   // or can be passed from the client
   requestId: string = v4();
@@ -12,7 +13,7 @@ export class AppRequestContext extends RequestContext {
 
 export class RequestContextService {
   static getContext(): AppRequestContext {
-    const ctx: AppRequestContext = RequestContext.currentContext.req;
+    const ctx: AppRequestContext = Request.RequestContext.currentContext.req;
     return ctx;
   }
 
@@ -24,7 +25,7 @@ export class RequestContextService {
   static getRequestId(): string {
     const requestId = this.getContext().requestId;
     if (!this.requestIdNotEmptyGuard(requestId)) {
-      throw new Error('Request id is not set');
+      throw new Error("Request id is not set");
     }
 
     return requestId;

@@ -22,6 +22,12 @@ import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 export class SignInHttpController {
   constructor(@Inject() private commandBus: CommandBus) {}
 
+  /**
+   * Normally, a command handler should return nothing,
+   * but in this case,
+   * we need to return the tokens to the user for the sake of simplicity.
+   * @param body
+   */
   @ApiOperation({ summary: "Sign in" })
   @ApiResponse({
     status: HttpStatus.OK,
