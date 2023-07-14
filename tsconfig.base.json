@@ -30,6 +30,9 @@
       "@all-in-one/core/ddd": ["libs/core/ddd/src/index.ts"],
       "@all-in-one/core/exceptions": ["libs/core/exceptions/src/index.ts"],
       "@all-in-one/core/guard": ["libs/core/guard/src/index.ts"],
+      "@all-in-one/core/middleware/request-context": [
+        "libs/core/middleware/request-context/src/index.ts"
+      ],
       "@all-in-one/core/port": ["libs/core/port/src/index.ts"]
     }
   },
