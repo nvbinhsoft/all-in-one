@@ -1,11 +1,11 @@
-import * as Request from "nestjs-request-context";
 import { v4 } from "uuid";
 import { Injectable, Scope } from "@nestjs/common";
+import { RequestContext } from "@all-in-one/core/middleware/request-context";
 
 @Injectable({
   scope: Scope.REQUEST,
 })
-export class AppRequestContext extends Request.RequestContext {
+export class AppRequestContext extends RequestContext {
   // this id can be automatically generated
   // or can be passed from the client
   requestId: string = v4();
@@ -13,7 +13,7 @@ export class AppRequestContext extends Request.RequestContext {
 
 export class RequestContextService {
   static getContext(): AppRequestContext {
-    const ctx: AppRequestContext = Request.RequestContext.currentContext.req;
+    const ctx: AppRequestContext = RequestContext.currentContext?.req;
     return ctx;
   }
 

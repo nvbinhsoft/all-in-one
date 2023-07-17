@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { SignupHttpController } from "../../lib/signup/signup.http.controller";
-import { CqrsModule } from "@nestjs/cqrs";
+import { CommandBus, CqrsModule } from "@nestjs/cqrs";
 import { RequestContextModule } from "nestjs-request-context";
 import { AccountDatabaseModule } from "@all-in-one/account/database";
 import { ConfigModule } from "@nestjs/config";
@@ -9,18 +9,35 @@ import {
   databaseConfig,
   rabbitmqConfig,
 } from "@all-in-one/account/utils/config";
+import { RequestContextService } from "@all-in-one/core/application";
+import { SignupService } from "../../lib/signup/signup.service";
+import { JwtModule } from "@nestjs/jwt";
+import { Ok } from "oxide.ts";
 
 describe("signupHttpController", () => {
   let app: TestingModule;
-
+  const mockStaticMethod = jest.fn();
+  const commandBusService = {
+    execute: jest.fn(),
+  };
   let signupController: SignupHttpController;
+
   beforeAll(async () => {
+    jest.spyOn(commandBusService, "execute").mockImplementation(() => {
+      return Ok("test-id");
+    });
+
     app = await Test.createTestingModule({
       controllers: [SignupHttpController],
-      providers: [],
+      providers: [
+        {
+          provide: CommandBus,
+          useValue: commandBusService,
+        },
+      ],
       imports: [
-        CqrsModule,
         RequestContextModule,
+        CqrsModule,
         AccountDatabaseModule,
         ConfigModule.forRoot({
           isGlobal: true,
@@ -30,6 +47,13 @@ describe("signupHttpController", () => {
     }).compile();
 
     signupController = app.get<SignupHttpController>(SignupHttpController);
+  });
+
+  beforeEach(() => {
+    RequestContextService.getContext = mockStaticMethod;
+    mockStaticMethod.mockReturnValue({
+      requestId: "ut-test-request-id" + Math.random(),
+    });
   });
 
   it("should init", () => {
@@ -43,11 +67,14 @@ describe("signupHttpController", () => {
       password: "test",
     });
 
-    expect(result).toBeDefined();
-    expect(result.id).toBeDefined();
-  });
+    // check if commandBus SignupCommand is called
+    expect(signupController).toBeDefined();
+    expect(signupController.signup).toBeDefined();
 
-  afterAll(async () => {
-    // todo: clear database after test
+    // check if result is correct
+    expect(result).toBeDefined();
+    expect(result).toEqual({
+      id: "test-id",
+    });
   });
 });

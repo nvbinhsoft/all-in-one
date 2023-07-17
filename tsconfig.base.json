@@ -33,7 +33,8 @@
       "@all-in-one/core/middleware/request-context": [
         "libs/core/middleware/request-context/src/index.ts"
       ],
-      "@all-in-one/core/port": ["libs/core/port/src/index.ts"]
+      "@all-in-one/core/port": ["libs/core/port/src/index.ts"],
+      "@all-in-one/test": ["libs/test/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

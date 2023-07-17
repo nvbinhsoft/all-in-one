@@ -1,1 +1,2 @@
-export * from "./lib/core-middleware-request-context.module";
+export * from "./lib/request-context.module";
+export * from "./lib/request-context.model";
