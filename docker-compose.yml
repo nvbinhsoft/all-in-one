@@ -1,21 +1,24 @@
-version: "3"
+version: "3.3"
 
 services:
 
   account-service:
     image: all-in-one/account-service
     links:
-      - rabbitmq
+        - rabbitmq
     ports:
-      - "3311:3000"
+      - "3311:3339"
     environment:
-      - ACCOUNT_DATABASE_URL=postgresql://postgres:helloworld@localhost:5432/account?schema=accounts
       - AT_JWT_SECRET=helloworldhelloworldhelloworld
       - AT_JWT_EXPIRES_IN=900
       - RT_JWT_SECRET=helloworldhelloworldhelloworld
       - RT_JWT_EXPIRES_IN=604800
       - JWT_SALT=12
       - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=helloworld
+      - RABBITMQ_PWD=helloworld
+      - ACCOUNT_DATABASE_URL=postgresql://postgres:helloworld@postgres:5432/account?schema=accounts
+      - PORT=3339
     networks:
       - private_network
     depends_on:
@@ -74,6 +77,9 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=helloworld
+      - RABBITMQ_DEFAULT_PASS=helloworld
     volumes:
       - './data/rabbitmq_data:/bitnami/rabbitmq/mnesia'
     networks:

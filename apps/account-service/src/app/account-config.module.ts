@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import {
+  appConfig,
   authConfig,
   databaseConfig,
   rabbitmqConfig,
@@ -10,7 +11,7 @@ import {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [rabbitmqConfig, databaseConfig, authConfig],
+      load: [rabbitmqConfig, databaseConfig, authConfig, appConfig],
     }),
   ],
 })
