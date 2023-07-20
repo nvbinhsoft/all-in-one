@@ -1,6 +1,7 @@
 import { Email, Password, SaltRound, ExpiresIn } from "./value-objects";
 import { HashPort } from "./ports";
 import { JwtSecret } from "./value-objects";
+import { Jwt } from "./value-objects/jwt.value-object";
 
 export interface AccountProps {
   email: Email;
@@ -20,10 +21,12 @@ export interface SignupProps {
 export interface SignInProps {
   email: Email;
   password: Password;
+  accessTokenProps: Jwt;
+  refreshTokenProps: Jwt;
+  hashService: HashPort;
 }
 
 export interface GenerateTokenProps {
-  secret: JwtSecret;
-  expiresIn: ExpiresIn;
+  jwt: Jwt;
   hashService: HashPort;
 }

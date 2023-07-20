@@ -3,6 +3,7 @@ import { PrismaService } from "./prisma.service";
 import { ACCOUNT_REPOSITORY } from "@all-in-one/account/utils/tokens";
 import { AccountRepository } from "./account.repository";
 import { PrismaClient } from "@prisma/client";
+import { AccountMapper } from "@all-in-one/account/domain";
 
 @Module({
   controllers: [],
@@ -13,6 +14,7 @@ import { PrismaClient } from "@prisma/client";
       useClass: AccountRepository,
     },
     PrismaClient,
+    AccountMapper,
   ],
   exports: [PrismaService, PrismaClient, ACCOUNT_REPOSITORY],
 })

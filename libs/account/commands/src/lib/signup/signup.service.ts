@@ -17,6 +17,7 @@ import { AggregateId } from "@all-in-one/core/ddd";
 import { PrismaClient } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
 import { AuthConfig, InjectAuthConfig } from "@all-in-one/account/utils/config";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @CommandHandler(SignupCommand)
 export class SignupService implements ICommandHandler<SignupCommand> {
@@ -25,7 +26,9 @@ export class SignupService implements ICommandHandler<SignupCommand> {
     private accountRepository: AccountRepositoryPort,
     @Inject(PrismaClient) private prismaClient: PrismaClient,
     @Inject(JwtService) private jwtService: JwtService,
-    @InjectAuthConfig() private authConfig: AuthConfig
+    @InjectAuthConfig() private authConfig: AuthConfig,
+
+    @Inject(EventEmitter2) private eventEmitter: EventEmitter2
   ) {}
 
   /**
@@ -46,24 +49,9 @@ export class SignupService implements ICommandHandler<SignupCommand> {
     try {
       await this.prismaClient.$transaction(async () => {
         await this.accountRepository.insert(account);
-
-        // const generateRefreshTokenProps = {
-        //   secret: new JwtSecret({ value: this.authConfig.rt_jwt_secret }),
-        //   expiresIn: new ExpiresIn({ value: Number(this.authConfig.rt_jwt_expires_in) }),
-        //   hashService: this.jwtService,
-        // };
-        //
-        // const generateAccessTokenProps = {
-        //   secret: new JwtSecret({ value: this.authConfig.at_jwt_secret }),
-        //   expiresIn: new ExpiresIn({ value: Number(this.authConfig.at_jwt_expires_in) }),
-        //   hashService: this.jwtService,
-        // };
-        //
-        // const [refreshToken, accessToken] = await Promise.all([
-        //   account.generateToken(generateRefreshTokenProps),
-        //   account.generateToken(generateAccessTokenProps),
-        // ]);
       });
+
+      await account.publishEvents(new Logger(SignupService.name), this.eventEmitter);
 
       return Ok(account.id);
     } catch (e: unknown) {

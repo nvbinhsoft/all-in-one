@@ -5,10 +5,25 @@ import { AppService } from "./app.service";
 import { AccountConfigModule } from "./account-config.module";
 import { AccountCommandsModule } from "@all-in-one/account/commands";
 import { RequestContextModule } from "nestjs-request-context";
+import { ContextInterceptor, RequestContextService } from "@all-in-one/core/application";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { EventEmitterModule } from "@nestjs/event-emitter";
+
+const interceptors = [
+  {
+    provide: APP_INTERCEPTOR,
+    useClass: ContextInterceptor,
+  },
+];
 
 @Module({
-  imports: [AccountConfigModule, AccountCommandsModule, RequestContextModule],
+  imports: [
+    AccountConfigModule,
+    AccountCommandsModule,
+    RequestContextModule,
+    EventEmitterModule.forRoot(),
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RequestContextService, ...interceptors],
 })
 export class AppModule {}

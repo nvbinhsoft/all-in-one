@@ -4,3 +4,4 @@ export * from "./lib/value-object.base";
 export * from "./lib/repository.port";
 export * from "./lib/aggregate-root.base";
 export * from "./lib/domain-event.base";
+export * from "./lib/mapper.interface";

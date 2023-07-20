@@ -1,6 +1,31 @@
 version: "3.3"
 
 services:
+
+  account-service:
+    image: all-in-one/account-service
+    links:
+        - rabbitmq
+    ports:
+      - "3311:3339"
+    environment:
+      - AT_JWT_SECRET=helloworldhelloworldhelloworld
+      - AT_JWT_EXPIRES_IN=900
+      - RT_JWT_SECRET=helloworldhelloworldhelloworld
+      - RT_JWT_EXPIRES_IN=604800
+      - JWT_SALT=12
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=helloworld
+      - RABBITMQ_PWD=helloworld
+      - ACCOUNT_DATABASE_URL=postgresql://postgres:helloworld@postgres:5432/account?schema=accounts
+      - PORT=3339
+    networks:
+      - private_network
+    depends_on:
+      - rabbitmq
+      - postgres
+      - redis
+
   prometheus:
     image: prom/prometheus:latest
     volumes:
@@ -9,6 +34,8 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - '9090:9090'
+    networks:
+      - private_network
 
   grafana:
     image: grafana/grafana:latest
@@ -21,6 +48,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=12345
     ports:
       - '3000:3000'
+    networks:
+      - private_network
   postgres:
     image: postgres
     restart: always
@@ -30,6 +59,8 @@ services:
       POSTGRES_PASSWORD: helloworld
     ports:
       - '5432:5432'
+    networks:
+      - private_network
   redis:
     image: redis
     command: /bin/sh -c "redis-server --requirepass helloworld"
@@ -37,19 +68,35 @@ services:
       - '6379:6379'
     volumes:
       - ./data/redis:/data
+    networks:
+      - private_network
+
 
   rabbitmq:
-    image: docker.io/bitnami/rabbitmq:3.12
+    image: rabbitmq
     ports:
-      - '4369:4369'
-      - '5551:5551'
-      - '5552:5552'
-      - '5672:5672'
-      - '25672:25672'
-      - '15672:15672'
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      - RABBITMQ_SECURE_PASSWORD=yes
-      - RABBITMQ_LOGS=-
+      - RABBITMQ_DEFAULT_USER=helloworld
+      - RABBITMQ_DEFAULT_PASS=helloworld
     volumes:
       - './data/rabbitmq_data:/bitnami/rabbitmq/mnesia'
+    networks:
+      - private_network
+
+  tcpdump:
+    image: nicolaka/netshoot
+    depends_on:
+      - rabbitmq
+      - account-service
+    command: tcpdump -i eth0 -w /data/nginx.pcap
+    volumes:
+      - $PWD/data:/data
+    networks:
+      - private_network
+
+networks:
+  private_network:
+    driver: bridge
 

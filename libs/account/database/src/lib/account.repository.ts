@@ -1,13 +1,16 @@
 import { AccountRepositoryPort } from "./account.repository.port";
-import { AccountEntity } from "@all-in-one/account/domain";
+import { AccountEntity, AccountMapper } from "@all-in-one/account/domain";
 import { Paginated, PaginatedQueryParams } from "@all-in-one/core/ddd";
-import { None, Option } from "oxide.ts";
-import { Injectable } from "@nestjs/common";
+import { None, Option, Some } from "oxide.ts";
+import { Inject, Injectable } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 
 @Injectable()
 export class AccountRepository implements AccountRepositoryPort {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private prismaService: PrismaService,
+    @Inject(AccountMapper) private accountMapper: AccountMapper
+  ) {}
 
   delete(entity: AccountEntity): Promise<boolean> {
     return Promise.resolve(false);
@@ -28,8 +31,13 @@ export class AccountRepository implements AccountRepositoryPort {
     return Promise.resolve(paginate);
   }
 
-  findOneByEmail(email: string): Promise<AccountEntity | null> {
-    return Promise.resolve(null);
+  async findOneByEmail(email: string): Promise<Option<AccountEntity>> {
+    const result = await this.prismaService.account.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    return result ? Some(this.accountMapper.toDomain(result)) : None;
   }
 
   async findOneById(id: string): Promise<Option<AccountEntity>> {
