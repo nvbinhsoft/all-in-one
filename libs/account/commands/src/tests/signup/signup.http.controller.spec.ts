@@ -4,10 +4,8 @@ import { CommandBus, CqrsModule } from "@nestjs/cqrs";
 import { RequestContextModule } from "nestjs-request-context";
 import { AccountDatabaseModule } from "@all-in-one/account/database";
 import { ConfigModule } from "@nestjs/config";
-import { authConfig, databaseConfig, rmqConfig } from "@all-in-one/account/utils/config";
+import { authConfig } from "@all-in-one/account/utils/config";
 import { RequestContextService } from "@all-in-one/core/application";
-import { SignupService } from "../../lib/signup/signup.service";
-import { JwtModule } from "@nestjs/jwt";
 import { Ok } from "oxide.ts";
 
 describe("signupHttpController", () => {
@@ -37,7 +35,7 @@ describe("signupHttpController", () => {
         AccountDatabaseModule,
         ConfigModule.forRoot({
           isGlobal: true,
-          load: [rmqConfig, databaseConfig, authConfig],
+          load: [authConfig],
         }),
       ],
     }).compile();
