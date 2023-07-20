@@ -21,8 +21,8 @@ export interface SignupProps {
 export interface SignInProps {
   email: Email;
   password: Password;
-  accessToken: Jwt;
-  refreshToken: Jwt;
+  accessTokenProps: Jwt;
+  refreshTokenProps: Jwt;
   hashService: HashPort;
 }
 

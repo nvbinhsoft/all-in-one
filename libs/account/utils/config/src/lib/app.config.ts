@@ -3,13 +3,13 @@ import { ConfigType, registerAs } from "@nestjs/config";
 import { Inject } from "@nestjs/common";
 
 const appConfigType = z.object({
-  PORT: z.string(),
+  PORT: z.ostring(),
 });
 
 appConfigType.parse(process.env);
 
 export const appConfig = registerAs("appConfig", () => ({
-  port: process.env.PORT,
+  port: process.env.PORT || 3300,
 }));
 
 export type AppConfig = ConfigType<typeof appConfig>;

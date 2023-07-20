@@ -8,18 +8,16 @@ import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app/app.module";
 import { MicroserviceOptions, Transport } from "@nestjs/microservices";
-import {
-  appConfig,
-  AppConfig,
-  RabbitmqConfig,
-  rabbitmqConfig,
-} from "@all-in-one/account/utils/config";
+import { appConfig, AppConfig } from "@all-in-one/account/utils/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { RmqService } from "@all-in-one/core/rmq";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ["error", "warn", "debug", "log", "verbose"],
   });
+
+  const globalPrefix = "api";
 
   // pipe
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
@@ -31,24 +29,15 @@ async function bootstrap() {
     .setVersion("1.0")
     .addTag("account")
     .build();
-
+  const swaggerPath = `${globalPrefix}/docs`;
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup("api", app, swaggerDocument);
+  SwaggerModule.setup(swaggerPath, app, swaggerDocument);
 
   // config rabbitmq & microservice
-  const accountConfigService = app.get<RabbitmqConfig>(rabbitmqConfig.KEY);
+  // const accountConfigService = app.get<RabbitmqConfig>(rmqConfig.KEY);
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [accountConfigService.rabbitmq.url],
-      queue: "account_queue",
-      queueOptions: {
-        durable: false,
-      },
-    },
-  });
-
+  const rmqService = app.get<RmqService>(RmqService);
+  app.connectMicroservice<MicroserviceOptions>(rmqService.getOptions());
   // bootstrapping
   app.enableShutdownHooks();
 
@@ -58,7 +47,9 @@ async function bootstrap() {
   const appConfigService = app.get<AppConfig>(appConfig.KEY);
   await app.listen(appConfigService.port, () => {
     Logger.log(
-      `Account service is listening on port ${appConfigService.port}, try http://localhost:${appConfigService.port}/api`
+      `Account service is listening on port ${appConfigService.port},
+      try http://localhost:${appConfigService.port}/${globalPrefix}.
+      API docs is running on http://localhost:${appConfigService.port}/${swaggerPath}`
     );
   });
 }

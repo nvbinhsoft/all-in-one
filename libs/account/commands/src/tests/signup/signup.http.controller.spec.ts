@@ -4,11 +4,7 @@ import { CommandBus, CqrsModule } from "@nestjs/cqrs";
 import { RequestContextModule } from "nestjs-request-context";
 import { AccountDatabaseModule } from "@all-in-one/account/database";
 import { ConfigModule } from "@nestjs/config";
-import {
-  authConfig,
-  databaseConfig,
-  rabbitmqConfig,
-} from "@all-in-one/account/utils/config";
+import { authConfig, databaseConfig, rmqConfig } from "@all-in-one/account/utils/config";
 import { RequestContextService } from "@all-in-one/core/application";
 import { SignupService } from "../../lib/signup/signup.service";
 import { JwtModule } from "@nestjs/jwt";
@@ -41,7 +37,7 @@ describe("signupHttpController", () => {
         AccountDatabaseModule,
         ConfigModule.forRoot({
           isGlobal: true,
-          load: [rabbitmqConfig, databaseConfig, authConfig],
+          load: [rmqConfig, databaseConfig, authConfig],
         }),
       ],
     }).compile();

@@ -20,7 +20,7 @@ import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 @Controller("v1")
 export class SignInHttpController {
-  constructor(@Inject() private commandBus: CommandBus) {}
+  constructor(private commandBus: CommandBus) {}
 
   /**
    * Normally, a command handler should return nothing,

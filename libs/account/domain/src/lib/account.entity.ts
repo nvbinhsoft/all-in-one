@@ -10,6 +10,10 @@ import { AccountCreatedDomainEvent } from "./events/account-created.domain-event
 import { Err, Ok, Option, Result } from "oxide.ts";
 import { HashPort } from "./ports";
 import { InvalidUsernamePasswordException } from "./account.errors";
+import { AccountLoginFailedDomainEvent } from "./events/account-login-failed.domain-event";
+import { LoggerPort } from "@all-in-one/core/port";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { AccountLoginSuccessDomainEvent } from "./events/account-login-success.domain-event";
 
 export type LoginTokens = [accessToken: string, refreshToken: string];
 
@@ -25,9 +29,7 @@ export class AccountEntity extends AggregateRoot<AccountProps> {
 
     const account = new AccountEntity({ id, props });
 
-    /**
-     * Add domain event and we will publish it later
-     */
+    // Add domain event and we will publish it later
     account.addEvent(
       new AccountCreatedDomainEvent({
         aggregateId: id,
@@ -40,35 +42,37 @@ export class AccountEntity extends AggregateRoot<AccountProps> {
 
   static async signIn(
     props: SignInProps,
-    account: Option<AccountEntity>
+    account: Option<AccountEntity>,
+    logger: LoggerPort,
+    eventEmitter: EventEmitter2
   ): Promise<Result<LoginTokens, InvalidUsernamePasswordException>> {
-    // validate to check if account is exist
     if (account.isNone()) {
       return Err(new InvalidUsernamePasswordException());
     }
 
     const accountEntity = account.unwrap();
 
-    // validate to check if email is correct
     if (!accountEntity.props.email.equals(props.email)) {
       return Err(new InvalidUsernamePasswordException());
     }
 
-    // validate to check if password is correct
     if (!props.password.compare(accountEntity.props.hash)) {
+      await this.publishSignInEvent(false, accountEntity, logger, eventEmitter);
       return Err(new InvalidUsernamePasswordException());
     }
 
     const [accessToken, refreshToken] = await Promise.all([
       accountEntity.generateToken({
         hashService: props.hashService,
-        jwt: props.accessToken,
+        jwt: props.accessTokenProps,
       }),
       accountEntity.generateToken({
         hashService: props.hashService,
-        jwt: props.refreshToken,
+        jwt: props.refreshTokenProps,
       }),
     ]);
+
+    await this.publishSignInEvent(true, accountEntity, logger, eventEmitter);
     return Ok([accessToken, refreshToken]);
   }
 
@@ -83,5 +87,30 @@ export class AccountEntity extends AggregateRoot<AccountProps> {
       { sub: account.id, ...account },
       { secret: props.jwt.unpack().secret, expiresIn: props.jwt.unpack().expiresIn }
     );
+  }
+
+  static async publishSignInEvent(
+    isSuccess: boolean,
+    account: AccountEntity,
+    logger: LoggerPort,
+    eventEmitter: EventEmitter2
+  ) {
+    if (isSuccess) {
+      account.addEvent(
+        new AccountLoginSuccessDomainEvent({
+          aggregateId: account.id,
+          email: account.props.email.unpack(),
+        })
+      );
+    } else {
+      account.addEvent(
+        new AccountLoginFailedDomainEvent({
+          aggregateId: account.id,
+          email: account.props.email.unpack(),
+        })
+      );
+    }
+
+    await account.publishEvents(logger, eventEmitter);
   }
 }
