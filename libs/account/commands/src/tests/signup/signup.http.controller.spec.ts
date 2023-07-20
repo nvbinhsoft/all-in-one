@@ -29,15 +29,7 @@ describe("signupHttpController", () => {
           useValue: commandBusService,
         },
       ],
-      imports: [
-        RequestContextModule,
-        CqrsModule,
-        AccountDatabaseModule,
-        ConfigModule.forRoot({
-          isGlobal: true,
-          load: [authConfig],
-        }),
-      ],
+      imports: [RequestContextModule],
     }).compile();
 
     signupController = app.get<SignupHttpController>(SignupHttpController);
