@@ -27,6 +27,7 @@
       ],
       "@all-in-one/core/api": ["libs/core/api/src/index.ts"],
       "@all-in-one/core/application": ["libs/core/application/src/index.ts"],
+      "@all-in-one/core/config": ["libs/core/config/src/index.ts"],
       "@all-in-one/core/ddd": ["libs/core/ddd/src/index.ts"],
       "@all-in-one/core/exceptions": ["libs/core/exceptions/src/index.ts"],
       "@all-in-one/core/guard": ["libs/core/guard/src/index.ts"],
@@ -34,6 +35,7 @@
         "libs/core/middleware/request-context/src/index.ts"
       ],
       "@all-in-one/core/port": ["libs/core/port/src/index.ts"],
+      "@all-in-one/core/rmq": ["libs/core/rmq/src/index.ts"],
       "@all-in-one/test": ["libs/test/src/index.ts"]
     }
   },
